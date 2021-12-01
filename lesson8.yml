@@ -1,0 +1,53 @@
+---
+- name: install dev server
+  hosts: dev
+  become: yes
+
+  tasks:
+  - name: install maven
+    apt:
+      name: maven
+      state: present
+
+  - name: install git
+    apt:
+      name: git
+      state: present
+
+  - name: clone a github repository
+    git:
+      repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git 
+      dest: /home/ubuntu/boxfuse2/
+      clone: yes
+      update: yes
+
+  - name: maven
+    command: mvn package
+    args:
+      chdir: /home/ubuntu/boxfuse2/
+
+
+- name: install prod server
+  hosts: prod
+  become: yes
+
+  tasks:
+  - name: install java
+    apt:
+      name: default-jdk
+      state: present
+
+  - name: install tomcat
+    apt:
+      name: tomcat9
+      state: present
+
+  - name: tomcat start
+    service:
+      name: tomcat9
+      state: started
+
+  - name: copy .war file
+    synchronize: src=/home/ubuntu/boxfuse2/target/hello-1.0.war dest=/var/lib/tomcat9/webapps/
+    delegate_to: 172.31.2.242
+
