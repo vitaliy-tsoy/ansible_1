@@ -30,9 +30,9 @@
 
   - name: log into dockerhub
     docker_login:
-      username: vittsoy73
-      email: vit.tsoy@gmail.com
-      password: qwerty1234
+      username: xxxxxx
+      email: xxxxxx
+      password: xxxxxx
 
   - name: push to docker hub
     command: docker push vittsoy73/mywebapp
@@ -62,9 +62,9 @@
 
   - name: log into dockerhub
     docker_login:
-      username: vittsoy73
-      email: vit.tsoy@gmail.com
-      password: qwerty1234
+      username: xxxxxx
+      email: xxxxxx
+      password: xxxxxxx
 
   - name: pull to docker hub
     command: docker pull vittsoy73/mywebapp
