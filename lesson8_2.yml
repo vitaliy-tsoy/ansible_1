@@ -1,0 +1,74 @@
+---
+- name: install dev server
+  hosts: dev
+  become: yes
+
+  tasks:
+  - name: install docker
+    apt:
+      name: python-docker
+      state: present
+
+  - name: install docker
+    apt:
+      name: docker.io
+      state: present
+
+  - name: ensure dockerfile is present
+    copy:
+      src: Dockerfile
+      dest: /home/ubuntu/docker/Dockerfile
+
+  - name: build an image
+    command: docker build -t mywebapp /home/ubuntu/docker
+
+  - name: tag the image
+    command: docker image tag mywebapp vittsoy73/mywebapp
+
+#  - name: log into dockerhub
+#    command: docker login
+
+  - name: log into dockerhub
+    docker_login:
+      username: vittsoy73
+      email: vit.tsoy@gmail.com
+      password: qwerty1234
+
+  - name: push to docker hub
+    command: docker push vittsoy73/mywebapp
+
+#  - name: tag and push to docker hub
+#    docker_image:
+#      name: vittsoy73/mywebapp
+#      repository: vittsoy73/mywebapp
+#      push: yes
+#      souce: local
+
+
+- name: install prod server
+  hosts: prod
+  become: yes
+
+  tasks:
+  - name: install docker
+    apt:
+      name: docker.io
+      state: present
+
+  - name: install docker
+    apt:
+      name: python-docker
+      state: present
+
+  - name: log into dockerhub
+    docker_login:
+      username: vittsoy73
+      email: vit.tsoy@gmail.com
+      password: qwerty1234
+
+  - name: pull to docker hub
+    command: docker pull vittsoy73/mywebapp
+
+  - name: docker start
+    command: docker run -d -p 8080:8080 vittsoy73/mywebapp
+
